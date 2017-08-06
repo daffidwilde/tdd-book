@@ -69,6 +69,7 @@ class NewVisitorTest(LiveServerTestCase):
         # Satisfied, she goes back to doing whatever.
 
 
+
     def test_multiple_users_can_start_lists_at_different_urls(self):
         # Connie starts a new to-do list
         self.browser.get(self.live_server_url)
@@ -80,6 +81,8 @@ class NewVisitorTest(LiveServerTestCase):
         # She notices that her list has a unique URL
         connie_list_url = self.browser.current_url
         self.assertRegex(connie_list_url, '/lists/.+')
+
+
 
         # Now a new user, Frank, comes along to the site.
 
@@ -110,5 +113,32 @@ class NewVisitorTest(LiveServerTestCase):
         self.assertIn('Buy milk', page_text)
 
         # Satisfied, they both go back to doing whatever
+
+
+
+    ## Now we get onto the ~ a e s t h e t i c ~ tests ##
+
+    def test_layout_and_styling(self):
+        # Connie goes to the home page
+        self.browser.get(self.live_server_url)
+        self.browser.set_window_size(1024, 768)
+
+        # She notices the input box is nicely centered
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+                inputbox.location['x'] + inputbox.size['width'] / 2,
+                512,
+                delta = 10
+        )
         
+        # She starts a new list and sees the input is nicely centered there too
+        inputbox.send_keys('testing')
+        inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: testing')
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertAlmostEqual(
+                inputbox.location['x'] + inputbox.size['width'] / 2,
+                512,
+                delta=10
+        )
 
